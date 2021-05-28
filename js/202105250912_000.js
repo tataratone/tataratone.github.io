@@ -36,7 +36,7 @@ class Ball {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   ball = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1000; i++) {
     let obj = new Ball();
     obj.loc = [
       rand(width / 4, (width * 3) / 4),
