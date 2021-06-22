@@ -1,0 +1,10 @@
+p, a {
+  padding: 0;
+  margin: 0;
+}
+
+.paper {
+  background-color: cornsilk;
+  padding: 1em;
+  margin: 0 0 1em 0;
+}
