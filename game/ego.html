@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>エゴ倉庫番</title>
+<meta name="description" content="あなたの一手でCPUの予定が変わる、対戦する倉庫番。ステージテキストと共有URLに対応。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23101722'/%3E%3Cpath d='M7 7h18v18H7z' fill='none' stroke='%235ce0ce' stroke-width='3'/%3E%3Cpath d='M11 16h10m-4-4 4 4-4 4' fill='none' stroke='%23ffaf63' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+.board{position:relative}.route-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;filter:drop-shadow(0 1px 2px #101722)}
+:root{color-scheme:dark;--bg:#101722;--panel:#192332;--line:#314157;--text:#e8eef6;--muted:#a5b3c5;--you:#5ce0ce;--cpu:#ffaf63}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:28px 24px}header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}h1{font-size:28px;margin:0;letter-spacing:.08em}h2{font-size:16px;margin:0 0 14px}small,.muted{color:var(--muted)}.eyebrow{font-size:12px;letter-spacing:.2em;color:var(--you)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}.stage{min-height:390px;display:flex;align-items:center;justify-content:center;overflow:auto;padding:16px 0}.board{display:grid;gap:3px;flex-shrink:0}.cell{width:var(--tile);height:var(--tile);position:relative;background:#263448;border-radius:4px;display:grid;place-items:center;font-weight:800;font-size:calc(var(--tile)*.46)}.wall{background:#45536a;border-top:3px solid #5e6d84;box-shadow:inset 0 -4px #344054}.goal:before{content:'';position:absolute;inset:18%;border:2px dashed var(--tone);border-radius:50%;opacity:.9}.piece{z-index:1;display:grid;place-items:center;width:76%;height:76%;line-height:1}.box{border:2px solid var(--tone);color:var(--tone);background:#1a2939;border-radius:5px;box-shadow:0 3px 0 #0e1723}.actor{border-radius:50%;color:#101722;background:var(--tone);box-shadow:0 3px 0 #0c1522}.on-goal:after{content:'✓';position:absolute;right:0;bottom:-4px;color:white;font-size:14px;z-index:2;text-shadow:0 1px 3px black}.you{--tone:var(--you)}.cpu{--tone:var(--cpu)}.neutral{--tone:#c4cdda}.toolbar,.scores,.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.scores{justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px}.badge{font-size:14px;padding:4px 10px;border-radius:6px;background:#101722}.turn{color:var(--muted);font-size:14px}button,select,textarea,input{font:inherit}button,select{border:1px solid #50617a;border-radius:8px;background:#263448;color:var(--text);padding:9px 14px;cursor:pointer}button:hover{background:#374b64}button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--you);outline-offset:3px}button.primary{background:var(--you);color:#102522;border:0;font-weight:700}button:disabled{opacity:.45;cursor:wait}.controls{display:grid;grid-template-columns:repeat(3,48px);gap:6px;justify-content:center;margin:16px auto}.controls button{padding:8px 0}.controls button:first-child{grid-column:2}.controls button:nth-child(2){grid-column:1}.hint{text-align:center;color:var(--muted);font-size:14px}.plan{min-height:140px}.path{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}.step{background:#2b3543;color:var(--cpu);padding:4px 9px;border-radius:5px;font-size:22px;line-height:1.3}.step:first-child{border:1px solid var(--cpu)}#planText{font-size:14px;color:var(--muted)}#status{min-height:30px;color:var(--you);margin-top:12px}.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;margin-top:18px}.legend b{display:inline-block;min-width:26px;color:var(--tone)}textarea{width:100%;height:195px;resize:vertical;background:#101722;color:var(--text);border:1px solid #4e5e74;border-radius:8px;padding:12px;font:16px/1.5 Consolas,monospace;white-space:pre;overflow:auto;tab-size:1;margin:12px 0}.load{margin-top:20px}.error{color:#ffb1ab;font-size:14px;white-space:pre-wrap}details{border-top:1px solid var(--line);margin-top:20px;padding-top:14px;font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--text)}#shareField{width:100%;background:#101722;color:var(--text);border:1px solid var(--line);padding:8px;margin-top:10px}.notice{font-size:13px;color:var(--muted);margin:10px 0 0}footer{font-size:13px;color:var(--muted);margin-top:18px}@media(max-width:850px){.layout{grid-template-columns:1fr}.stage{min-height:260px}main{padding:18px 12px}.panel{padding:16px}header{align-items:flex-start}h1{font-size:23px}.aside{display:grid;grid-template-columns:1fr 1fr;gap:16px}.load{margin:0}}@media(max-width:570px){.aside{display:block}.load{margin-top:16px}header{flex-wrap:wrap}.toolbar button{font-size:14px;padding:8px 10px}}
+</style>
+<main>
+<header><div><div class="eyebrow">EGO SOKOBAN</div><h1>エゴ倉庫番</h1></div><div class="toolbar"><button id="undo" disabled title="プレイヤーとCPUの1ターンを戻す">↶ UNDO (Z)</button><button id="reset">↺ リセット (R)</button><button id="share">共有URLをコピー</button></div></header>
+<div class="layout"><section class="panel"><div class="scores"><span class="badge" id="playerScore"></span><span class="badge" id="cpuScore"></span><span class="turn" id="turn"></span></div><div class="stage" id="stage"><div class="board" id="board" role="img" aria-label="ゲーム盤面"></div></div><div id="status" role="status" aria-live="polite"></div><div class="controls" aria-label="移動操作"><button data-dir="0" aria-label="上">↑</button><button data-dir="3" aria-label="左">←</button><button data-dir="wait" aria-label="待機">•</button><button data-dir="1" aria-label="右">→</button><button data-dir="2" aria-label="下" style="grid-column:2">↓</button></div><div class="hint">矢印 / WASD で移動 · Space / . で待機 · Z でUNDO · R でリセット<br>Shift を押している間はCPU経路を表示（数字は最初に通る手数・破線は仮想経路）<br>あなたが1回行動すると、CPUも1回行動します。</div><input id="shareField" aria-label="共有URL" readonly hidden><p class="notice" id="shareNotice"></p><details><summary>遊び方とCPUのルール</summary><p>あなたの箱 p をすべて P に、CPUは自分の箱 c をすべて C に運びます。どの箱も1個まで押せます。キャラクター同士は通り抜けられません。壁への移動も1行動として数えます。</p><p>CPUは歩行も箱押しも1手として、毎回最短解を探索。同率なら、現在の向きから直進 → 右折 → 左折 → Uターンを優先します。あなたを壁とすると解けない場合は、あなたを取り除いて計画します。実行をあなたに阻まれると、向きだけ変えます。</p><p>予定は現在の盤面での最短手順です。あなたの次の行動で変わります。片方がクリアしても、引き続き盤面を動かせます。箱が0個の側は目標なしと表示します。</p><p>大きな盤面や箱の多いステージでは、厳密な探索に時間がかかります。「探索中」は「解なし」とは異なります。リセットや別ステージの読み込みで中断できます。</p></details></section>
+<aside class="aside"><section class="panel plan"><div class="eyebrow" style="color:var(--cpu)">CPU INTENT</div><h2>CPUの次の手</h2><div id="path" class="path" aria-live="polite"></div><div id="planText"></div><div class="legend"><span class="you"><b>●</b>あなた</span><span class="cpu"><b>●</b>CPU</span><span class="you"><b>p</b>あなたの箱</span><span class="cpu"><b>c</b>CPUの箱</span><span class="you"><b>◌ P</b>あなたのゴール</span><span class="cpu"><b>◌ C</b>CPUのゴール</span><span class="neutral"><b>o</b>中立箱</span><span><b>#</b>壁</span></div></section>
+<section class="panel load"><h2>ステージを読み込む</h2><label for="examples" class="muted">サンプル</label> <select id="examples"><option value="0">はじめの倉庫</option><option value="1">身体で止める</option></select><label for="source" style="display:block;margin-top:12px;font-size:14px">ステージテキスト</label><textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea><button id="load" class="primary">このステージで遊ぶ</button><div id="error" class="error" role="alert"></div><p class="notice"># 壁 · . 床 · X あなた · ^ &gt; v &lt; CPU<br>P / p あなたのゴール / 箱<br>C / c CPUのゴール / 箱 · o 中立箱<br>同じ行幅で入力。XとCPUは各1体。</p></section></aside></div><footer>初期ステージをURLに保存します。進行中の配置は共有されません。外部通信・外部ライブラリなし。</footer>
+</main>
+<script id="engine">
+'use strict';
+const SYMBOLS='#.X^>v<PpCco\n', ARROWS=['↑','→','↓','←'];
+function parseStage(text){
+ const normalized=text.replace(/\r/g,'').replace(/^\n+|\n+$/g,''); const rows=normalized.split('\n'),w=rows[0].length,h=rows.length;
+ if(!w||rows.some(r=>r.length!==w))throw Error('各行を同じ長さにしてください。空きマスは . です。');
+ if(w*h>4096)throw Error('盤面は4096マス以内にしてください。');
+ if(/[^#.X<>v^PpCco\n]/.test(normalized))throw Error('使用できない文字があります。空白の代わりに . を使ってください。');
+ const terrain=[],boxes=[];let player=-1,cpu=-1,facing=2,np=0,nc=0;
+ rows.join('').split('').forEach((ch,i)=>{terrain.push(ch==='#'?'#':ch==='P'||ch==='C'?ch:'.');if(ch==='X'){player=i;np++}if('^>v<'.includes(ch)){cpu=i;facing='^>v<'.indexOf(ch);nc++}if('pco'.includes(ch))boxes.push({pos:i,type:ch});});
+ if(np!==1||nc!==1)throw Error('プレイヤー X とCPU（^ > v <）をそれぞれ1体配置してください。');
+ return {text:normalized,w,h,terrain,player,cpu,facing,playerFacing:2,boxes,turn:0};
+}
+function neighbor(pos,d,w,h){const x=pos%w,y=Math.floor(pos/w),nx=x+[0,1,0,-1][d],ny=y+[-1,0,1,0][d];return nx<0||nx>=w||ny<0||ny>=h?-1:ny*w+nx;}
+function move(s,actor,d){const key=actor==='cpu'?'facing':'playerFacing';s[key]=d;const other=actor==='cpu'?s.player:s.cpu,n=neighbor(s[actor],d,s.w,s.h);if(n<0||s.terrain[n]==='#'||n===other)return false;const b=s.boxes.find(b=>b.pos===n);if(b){const to=neighbor(n,d,s.w,s.h);if(to<0||s.terrain[to]==='#'||to===other||s.boxes.some(b=>b.pos===to))return false;b.pos=to;}s[actor]=n;return true;}
+function solved(s,type){return s.boxes.filter(b=>b.type===type).every(b=>s.terrain[b.pos]===(type==='c'?'C':'P'));}
+function solver(s,block,onProgress=()=>{}){
+ const goals=new Set(s.terrain.map((t,i)=>t==='C'?i:-1).filter(i=>i>=0));
+ const start={pos:s.cpu,c:s.boxes.filter(b=>b.type==='c').map(b=>b.pos).sort((a,b)=>a-b),o:s.boxes.filter(b=>b.type!=='c').map(b=>b.pos).sort((a,b)=>a-b),dir:s.facing,parent:-1,action:-1};
+ if(start.c.every(p=>goals.has(p)))return [];
+ if(start.c.length>goals.size)return null;
+ // Reverse-push reachability is a sound static dead-square filter for CPU boxes only.
+ const live=new Set([...goals].filter(p=>p!==block)),q=[...live];const floor=p=>p>=0&&p!==block&&s.terrain[p]!=='#';
+ for(let i=0;i<q.length;i++)for(let d=0;d<4;d++){const prev=neighbor(q[i],d,s.w,s.h),stand=prev<0?-1:neighbor(prev,d,s.w,s.h);if(floor(prev)&&floor(stand)&&!live.has(prev)){live.add(prev);q.push(prev);}}
+ if(start.c.some(p=>!live.has(p)))return null;
+ const key=n=>n.pos+'|'+n.c.join(',')+'|'+n.o.join(',');const nodes=[start],seen=new Set([key(start)]);
+ for(let head=0;head<nodes.length;head++){
+  const n=nodes[head];for(const d of [n.dir,(n.dir+1)%4,(n.dir+3)%4,(n.dir+2)%4]){
+   const p=neighbor(n.pos,d,s.w,s.h);if(!floor(p))continue;
+   let c=n.c,o=n.o;const ci=c.indexOf(p),oi=o.indexOf(p);
+   if(ci>=0||oi>=0){const to=neighbor(p,d,s.w,s.h);if(!floor(to)||c.includes(to)||o.includes(to))continue;if(ci>=0){if(!live.has(to))continue;c=c.slice();c[ci]=to;c.sort((a,b)=>a-b);}else{o=o.slice();o[oi]=to;o.sort((a,b)=>a-b);}}
+   const next={pos:p,c,o,dir:d,parent:head,action:d},k=key(next);if(seen.has(k))continue;seen.add(k);nodes.push(next);
+   if(c.every(p=>goals.has(p))){const path=[];let i=nodes.length-1;while(nodes[i].parent>=0){path.push(nodes[i].action);i=nodes[i].parent;}return path.reverse();}
+  }
+  if(head%20000===0)onProgress(head,nodes.length);
+ }
+ return null;
+}
+function plan(s,progress=()=>{}){const real=solver(s,s.player,progress);if(real!==null)return {path:real,mode:'real'};const virtual=solver(s,-1,progress);return {path:virtual,mode:virtual===null?'none':'virtual'};}
+function encodeStage(t){const bytes=[];for(let i=0;i<t.length;){let count=1;while(count<16&&t[i+count]===t[i])count++;bytes.push(((count-1)<<4)|SYMBOLS.indexOf(t[i]));i+=count;}return 'r1.'+btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function decodeStage(code){if(!code.startsWith('r1.')||code.length>12000)throw Error('共有URLの形式が正しくありません。');let out='';const raw=atob(code.slice(3).replace(/-/g,'+').replace(/_/g,'/'));for(const ch of raw){const v=ch.charCodeAt(0),symbol=SYMBOLS[v&15];if(symbol===undefined)throw Error('共有データが壊れています。');out+=symbol.repeat((v>>4)+1);if(out.length>8500)throw Error('共有ステージが大きすぎます。');}return out;}
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const samples=['#########\n#.......#\n#.X.p.P.#\n#...o...#\n#.>.c.C.#\n#.......#\n#########','######\n##.###\n#CXcv#\n######'];
+let state,initial,worker,busy=false,generation=0,currentPlan=null;
+let undoHistory=[],shiftHeld=false;
+// The route is a preview of the current plan, never a stored plan for execution.
+function renderRoute(){
+ const board=$('board');board.querySelector('.route-overlay')?.remove();
+ if(!shiftHeld||!currentPlan?.path?.length)return;
+ const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+ const tile=parseFloat(board.style.getPropertyValue('--tile')),pitch=tile+3;
+ const point=p=>[(p%state.w)*pitch+tile/2,Math.floor(p/state.w)*pitch+tile/2];
+ svg.classList.add('route-overlay');svg.setAttribute('viewBox',`0 0 ${board.clientWidth} ${board.clientHeight}`);
+ svg.setAttribute('aria-label','CPUの予定経路'+(currentPlan.mode==='virtual'?'（プレイヤーを除いた仮想経路）':''));
+ const marker=document.createElementNS(ns,'marker');marker.id='route-arrow';marker.setAttribute('viewBox','0 0 10 10');marker.setAttribute('refX','8');marker.setAttribute('refY','5');marker.setAttribute('markerWidth','4');marker.setAttribute('markerHeight','4');marker.setAttribute('orient','auto');
+ const arrow=document.createElementNS(ns,'path');arrow.setAttribute('d','M0 0 L10 5 L0 10 z');arrow.setAttribute('fill','#ffe3a6');marker.append(arrow);const defs=document.createElementNS(ns,'defs');defs.append(marker);svg.append(defs);
+ let pos=state.cpu;const labels=new Map();
+ currentPlan.path.forEach((d,i)=>{const next=neighbor(pos,d,state.w,state.h),[x1,y1]=point(pos),[x2,y2]=point(next);const line=document.createElementNS(ns,'line');for(const [k,v] of Object.entries({x1,y1,x2,y2,stroke:'#ffe3a6','stroke-width':Math.max(2,tile*.065),'marker-end':'url(#route-arrow)'}))line.setAttribute(k,v);if(currentPlan.mode==='virtual')line.setAttribute('stroke-dasharray','5 3');svg.append(line);if(!labels.has(next))labels.set(next,i+1);pos=next;});
+ for(const [p,n] of labels){const [x,y]=point(p),text=document.createElementNS(ns,'text');text.setAttribute('x',x+tile*.24);text.setAttribute('y',y-tile*.22);text.setAttribute('font-size',Math.max(9,tile*.22));text.setAttribute('fill','#fff4d8');text.setAttribute('stroke','#101722');text.setAttribute('stroke-width','3');text.setAttribute('paint-order','stroke');text.textContent=n;svg.append(text);}
+ board.append(svg);
+}
+const workerCode=$('engine').textContent+`\nonmessage=e=>{try{const s=e.data;const result=plan(s,(visited,queued)=>postMessage({progress:true,visited,queued}));postMessage({result});}catch(error){postMessage({error:error.message});}};`;
+const workerURL=URL.createObjectURL(new Blob([workerCode],{type:'text/javascript'}));
+function stop(){generation++;if(worker)worker.terminate();worker=null;busy=false;}
+function setBusy(v){busy=v;document.querySelectorAll('[data-dir]').forEach(b=>b.disabled=v);}
+function search(s){return new Promise((resolve,reject)=>{if(worker)worker.terminate();worker=new Worker(workerURL);worker.onmessage=e=>{if(e.data.progress){$('planText').textContent='最短手順を探索中… '+e.data.visited.toLocaleString()+' 状態を確認';return;}worker.terminate();worker=null;e.data.error?reject(Error(e.data.error)):resolve(e.data.result);};worker.onerror=e=>{worker.terminate();worker=null;reject(Error(e.message||'CPU探索を開始できませんでした。'));};worker.postMessage(s);});}
+function render(){
+ $('undo').disabled=undoHistory.length===0;
+ const b=$('board');b.replaceChildren();const tile=Math.max(18,Math.min(52,Math.floor(($('stage').clientWidth-8)/state.w)-3));b.style.setProperty('--tile',tile+'px');b.style.gridTemplateColumns=`repeat(${state.w},var(--tile))`;
+ for(let i=0;i<state.w*state.h;i++){const t=state.terrain[i],cell=document.createElement('div');cell.className='cell'+(t==='#'?' wall':t==='P'?' goal you':t==='C'?' goal cpu':'');const box=state.boxes.find(b=>b.pos===i);let label=t==='#'?'壁':t==='P'?'あなたのゴール':t==='C'?'CPUゴール':'床';if(box||i===state.player||i===state.cpu){const piece=document.createElement('span');const type=box?box.type:i===state.player?'X':'cpu';piece.className='piece '+(box?'box ':'actor ')+(type==='p'||type==='X'?'you':type==='c'||type==='cpu'?'cpu':'neutral');piece.textContent=box?box.type:ARROWS[i===state.player?state.playerFacing:state.facing];cell.append(piece);if(box&&((box.type==='p'&&t==='P')||(box.type==='c'&&t==='C')))cell.classList.add('on-goal');label+=' / '+(box?box.type+' 箱':type==='X'?'あなた':'CPU');}cell.title=`${i%state.w+1},${Math.floor(i/state.w)+1}: ${label}`;b.append(cell);}
+ for(const [type,id,name] of [['p','playerScore','あなた'],['c','cpuScore','CPU']]){const boxes=state.boxes.filter(b=>b.type===type),done=boxes.filter(b=>state.terrain[b.pos]===(type==='p'?'P':'C')).length;$(id).textContent=name+' '+done+' / '+boxes.length+(boxes.length===0?' · 目標なし':done===boxes.length?' · クリア！':'');}
+ $('turn').textContent='TURN '+String(state.turn).padStart(2,'0');
+ renderRoute();
+}
+function showPlan(p){currentPlan=p;renderRoute();$('path').replaceChildren();if(p.path===null){$('planText').textContent='あなたを取り除いても解なし。CPUは位置も向きも変えず待機します。';return;}if(!p.path.length){$('planText').textContent='CPUの目標は達成済み。CPUは待機します。';return;}p.path.slice(0,12).forEach((d,i)=>{const span=document.createElement('span');span.className='step';span.textContent=ARROWS[d];span.title=(i+1)+'手目';$('path').append(span);});const probe=structuredClone(state),blocked=!move(probe,'cpu',p.path[0]);$('planText').textContent=`最短 ${p.path.length} 手${p.path.length>12?' · 先頭12手を表示':''}。`+(p.mode==='virtual'?'あなたを取り除いた仮想の予定。':'あなたを避ける予定。')+(blocked?' 次の手はあなたに阻まれ、向きだけ変わります。':'');}
+async function preview(token){const p=await search(state);if(token!==generation)return;showPlan(p);setBusy(false);}
+async function undo(){
+ if(!state||!undoHistory.length)return;
+ stop();const token=generation;state=undoHistory.pop();currentPlan=null;
+ $('error').textContent='';$('status').textContent='1ターン戻しました。';
+ $('path').replaceChildren();$('planText').textContent='戻した盤面から再計算中…';
+ render();setBusy(true);
+ try{await preview(token);}catch(e){if(token!==generation)return;$('error').textContent='CPU探索エラー: '+e.message;$('planText').textContent='探索を実行できません。リセットで再試行してください。';}
+}
+$('undo').onclick=undo;
+async function act(d){if(busy||!state)return;const token=generation,previous=structuredClone(state);undoHistory.push(previous);setBusy(true);currentPlan=null;$('path').replaceChildren();$('planText').textContent='行動後の盤面から再計算中…';if(d!=='wait')move(state,'player',Number(d));state.turn++;render();try{const p=await search(state);if(token!==generation)return;let message=d==='wait'?'あなたは待機。':'あなたが行動。';if(p.path&&p.path.length){const moved=move(state,'cpu',p.path[0]);message+=' CPUは'+ARROWS[p.path[0]]+(moved?'へ行動。':'を向き、あなたに阻まれました。');}else message+=' CPUは待機。';$('status').textContent=message;render();await preview(token);}catch(e){if(token!==generation)return;state=previous;undoHistory.pop();render();setBusy(false);$('error').textContent='探索エラーのため、このターンを取り消しました: '+e.message;}}
+async function load(text,updateURL=true){let next;try{next=parseStage(text);}catch(e){$('error').textContent=e.message;return;}stop();const token=generation;state=next;undoHistory=[];currentPlan=null;initial=next.text;$('source').value=initial;$('error').textContent='';$('status').textContent='ステージを読み込みました。';$('path').replaceChildren();$('planText').textContent='最短手順を探索中…';$('shareField').hidden=true;render();if(updateURL){const hash='s='+encodeStage(initial);try{history.replaceState(null,'','#'+hash);}catch{location.hash=hash;}}setBusy(true);try{await preview(token);}catch(e){if(token!==generation)return;$('error').textContent='CPU探索エラー: '+e.message;$('planText').textContent='探索を実行できません。リセットで再試行してください。';}}
+$('load').onclick=()=>load($('source').value);$('reset').onclick=()=>load(initial);$('examples').onchange=e=>{$('source').value=samples[Number(e.target.value)];};document.querySelectorAll('[data-dir]').forEach(b=>b.onclick=()=>act(b.dataset.dir));
+document.addEventListener('keyup',e=>{if(e.key==='Shift'){shiftHeld=false;renderRoute();}}); window.addEventListener('blur',()=>{shiftHeld=false;renderRoute();}); document.addEventListener('visibilitychange',()=>{if(document.hidden){shiftHeld=false;renderRoute();}});
+document.addEventListener('keydown',e=>{if(e.key==='Shift'){shiftHeld=true;renderRoute();return;}if(e.target.closest('textarea,input,select')||(e.target.closest('button')&&(e.key===' '||e.key==='Enter'))||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='r'){e.preventDefault();if(!e.repeat&&initial)load(initial);return;}if(e.key.toLowerCase()==='z'){e.preventDefault();if(!e.repeat)undo();return;}const map={ArrowUp:0,ArrowRight:1,ArrowDown:2,ArrowLeft:3,w:0,d:1,s:2,a:3,' ':'wait','.':'wait'};const d=map[e.key]??map[e.key.toLowerCase()];if(d!==undefined){e.preventDefault();if(!e.repeat)act(d);}});
+$('share').onclick=async()=>{const url=new URL(location.href);url.hash='s='+encodeStage(initial);try{await navigator.clipboard.writeText(url.href);$('shareNotice').textContent='共有URLをコピーしました。';}catch{$('shareField').value=url.href;$('shareField').hidden=false;$('shareField').select();$('shareNotice').textContent='表示されたURLをコピーしてください。';}if(location.protocol==='file:')$('shareNotice').textContent+=' ローカルファイルです。相手にもHTMLを渡し、相手のファイルURLの末尾に #s=… を付けてください。Web上に置けば同じURLだけで共有できます。';};
+function fromURL(){try{const p=new URLSearchParams(location.hash.slice(1));const code=p.get('s')||new URLSearchParams(location.search).get('s');load(code?decodeStage(code):samples[0]);}catch(e){load(samples[0],false);$('error').textContent='共有URLを読み込めません: '+e.message;}}
+window.addEventListener('hashchange',fromURL);window.addEventListener('resize',()=>{if(state)render();});fromURL();
+</script>
+</html>
+
+
+
+
+
